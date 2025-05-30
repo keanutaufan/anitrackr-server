@@ -1,0 +1,12 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+bin = "./tmp/main.exe"
+cmd = "go build -o ./tmp/main.exe ./cmd/api"
+include_ext = ["go"]
+exclude_dir = ["vendor", "tmp"]
+exclude_regex = ["_test.go"]
+
+[log]
+level = "debug"
