@@ -1,4 +1,4 @@
-package anime
+package anime_model
 
 import (
 	"github.com/shopspring/decimal"

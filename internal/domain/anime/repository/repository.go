@@ -2,7 +2,7 @@ package anime_repository
 
 import (
 	"context"
-	"github.com/keanutaufan/anitrackr-server/internal/domain/anime"
+	"github.com/keanutaufan/anitrackr-server/internal/domain/anime/model"
 	"github.com/uptrace/bun"
 )
 
@@ -16,19 +16,19 @@ func NewRepository(db *bun.DB) Repository {
 	}
 }
 
-func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (anime.Anime, error) {
+func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (anime_model.Anime, error) {
 	if tx == nil {
 		tx = r.db
 	}
 
-	var result anime.Anime
+	var result anime_model.Anime
 	err := tx.NewSelect().
 		Model(&result).
 		Where("id = ?", id).
 		Scan(ctx)
 
 	if err != nil {
-		return anime.Anime{}, err
+		return anime_model.Anime{}, err
 	}
 
 	return result, nil

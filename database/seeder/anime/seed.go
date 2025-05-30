@@ -3,7 +3,7 @@ package anime
 import (
 	"context"
 	"github.com/gocarina/gocsv"
-	"github.com/keanutaufan/anitrackr-server/internal/domain/anime"
+	"github.com/keanutaufan/anitrackr-server/internal/domain/anime/model"
 	"github.com/shopspring/decimal"
 	"github.com/uptrace/bun"
 	"os"
@@ -47,7 +47,7 @@ func Seeder(ctx context.Context, db *bun.DB) error {
 		return err
 	}
 
-	animeModel := make([]anime.Anime, len(animeData))
+	animeModel := make([]anime_model.Anime, len(animeData))
 	for i, currentAnime := range animeData {
 		aired, err := parseAiredString(currentAnime.Aired)
 		if err != nil {
@@ -64,7 +64,7 @@ func Seeder(ctx context.Context, db *bun.DB) error {
 			return err
 		}
 
-		animeModel[i] = anime.Anime{
+		animeModel[i] = anime_model.Anime{
 			ID:            currentAnime.ID,
 			Title:         currentAnime.Title,
 			MalScore:      decimal.NewFromFloat(currentAnime.MalScore),

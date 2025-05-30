@@ -1,7 +1,7 @@
 package anime_dto
 
 import (
-	"github.com/keanutaufan/anitrackr-server/internal/domain/anime"
+	"github.com/keanutaufan/anitrackr-server/internal/domain/anime/model"
 	"time"
 )
 
@@ -34,7 +34,7 @@ type GetResponse struct {
 	UpdatedAt     time.Time              `json:"updated_at"`
 }
 
-func (res GetResponse) FromModel(model anime.Anime) GetResponse {
+func (res GetResponse) FromModel(model anime_model.Anime) GetResponse {
 	return GetResponse{
 		ID:            model.ID,
 		Title:         model.Title,

@@ -1,7 +1,7 @@
 package user_dto
 
 import (
-	"github.com/keanutaufan/anitrackr-server/internal/domain/user"
+	"github.com/keanutaufan/anitrackr-server/internal/domain/user/model"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type MeResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func (res MeResponse) FromModel(model user.User) MeResponse {
+func (res MeResponse) FromModel(model user_model.User) MeResponse {
 	return MeResponse{
 		ID:        model.ID,
 		Uid:       model.Uid,
