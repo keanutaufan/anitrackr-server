@@ -12,6 +12,8 @@ type Anime struct {
 	ID            int64                  `bun:"id,pk,autoincrement"`
 	Title         string                 `bun:"title,notnull"`
 	MalScore      decimal.Decimal        `bun:"mal_score,notnull"`
+	Score         decimal.Decimal        `bun:"score,notnull"`
+	ScoredBy      int64                  `bun:"scored_by,notnull"`
 	Genres        string                 `bun:"genres,notnull"`
 	Synopsis      string                 `bun:"synopsis,notnull"`
 	TitleEnglish  *string                `bun:"title_english"`

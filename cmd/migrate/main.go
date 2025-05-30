@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/keanutaufan/anitrackr-server/migrations"
+	"github.com/keanutaufan/anitrackr-server/database/migrations"
 	"github.com/keanutaufan/anitrackr-server/platform/database"
 	"log"
 	"os"
