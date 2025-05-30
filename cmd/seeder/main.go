@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/keanutaufan/anitrackr-server/database/seeder/anime"
+	"github.com/keanutaufan/anitrackr-server/database/seeder"
 	"github.com/keanutaufan/anitrackr-server/platform/database"
 	"github.com/uptrace/bun/extra/bundebug"
 )
@@ -14,7 +14,7 @@ func main() {
 		bundebug.FromEnv(),
 	))
 
-	if err := anime.Seeder(context.Background(), db); err != nil {
+	if err := seeder.Seeder(context.Background(), db); err != nil {
 		panic(err)
 	}
 }
