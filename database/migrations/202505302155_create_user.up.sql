@@ -8,4 +8,4 @@ CREATE TABLE users
     updated_at timestamptz NOT NULL DEFAULT now(),
     UNIQUE (email),
     UNIQUE (uid)
-)
+);
