@@ -11,6 +11,7 @@ func GroupReviewRoute(router *echo.Echo, reviewHandler review_handler.Handler, a
 	group.POST("", reviewHandler.Store, authMiddleware)
 	group.GET("/:reviewId", reviewHandler.Show)
 	group.PUT("/:reviewId", reviewHandler.Update, authMiddleware)
+	group.DELETE("/:reviewId", reviewHandler.Delete, authMiddleware)
 
 	return group
 }

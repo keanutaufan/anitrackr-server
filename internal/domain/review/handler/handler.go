@@ -80,3 +80,26 @@ func (h *handler) Update(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+func (h *handler) Delete(c echo.Context) error {
+	var req review_request.DeleteReview
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	userId, ok := c.Get("userId").(int64)
+	if !ok {
+		return nil
+	}
+	req.UserId = userId
+
+	err := h.reviewUseCase.Delete(c.Request().Context(), req)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, http_response.Response{
+		Success: true,
+		Message: "Review deleted successfully!",
+	})
+}

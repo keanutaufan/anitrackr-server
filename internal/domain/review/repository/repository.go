@@ -37,7 +37,7 @@ func (r *repository) Create(ctx context.Context, tx bun.IDB, review review_model
 	return review, nil
 }
 
-func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (review_model.Review, error) {
+func (r *repository) FindOne(ctx context.Context, tx bun.IDB, reviewId int64) (review_model.Review, error) {
 	if tx == nil {
 		tx = r.db
 	}
@@ -45,7 +45,7 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (review_
 	var result review_model.Review
 	err := tx.NewSelect().
 		Model(&result).
-		Where("id = ?", id).
+		Where("id = ?", reviewId).
 		Scan(ctx)
 
 	if err != nil {
@@ -76,4 +76,21 @@ func (r *repository) Update(ctx context.Context, tx bun.IDB, review review_model
 	}
 
 	return review, nil
+}
+
+func (r *repository) Delete(ctx context.Context, tx bun.IDB, reviewId int64) error {
+	if tx == nil {
+		tx = r.db
+	}
+
+	_, err := tx.NewDelete().
+		Model((*review_model.Review)(nil)).
+		Where("id = ?", reviewId).
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

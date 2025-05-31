@@ -53,3 +53,21 @@ func (uc *useCase) Update(ctx context.Context, req review_request.UpdateReview) 
 
 	return (review_response.ShowReview{}).FromModel(result), nil
 }
+
+func (uc *useCase) Delete(ctx context.Context, req review_request.DeleteReview) error {
+	old, err := uc.reviewRepo.FindOne(ctx, nil, req.Id)
+	if err != nil {
+		return err
+	}
+
+	if old.UserId != req.UserId {
+		return app_errors.ErrForbidden
+	}
+
+	err = uc.reviewRepo.Delete(ctx, nil, req.Id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
