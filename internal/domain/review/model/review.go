@@ -10,7 +10,7 @@ import (
 type Review struct {
 	bun.BaseModel `bun:"table:reviews"`
 
-	ID        int64     `bun:"primary_key,autoincrement"`
+	ID        int64     `bun:"id,pk,autoincrement"`
 	Title     string    `bun:"title,notnull"`
 	Body      string    `bun:"body,notnull"`
 	AnimeId   int64     `bun:"anime_id,notnull,unique:anime_user"`
