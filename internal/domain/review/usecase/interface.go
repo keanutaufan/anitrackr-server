@@ -9,4 +9,5 @@ import (
 type UseCase interface {
 	Create(ctx context.Context, review review_request.StoreReview) (review_response.ShowReview, error)
 	FindOne(ctx context.Context, reviewId int64) (review_response.ShowReview, error)
+	Update(ctx context.Context, review review_request.UpdateReview) (review_response.ShowReview, error)
 }

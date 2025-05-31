@@ -57,3 +57,23 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (review_
 
 	return result, nil
 }
+
+func (r *repository) Update(ctx context.Context, tx bun.IDB, review review_model.Review) (review_model.Review, error) {
+	if tx == nil {
+		tx = r.db
+	}
+
+	_, err := tx.NewUpdate().
+		Model(&review).
+		Set("title = ?", review.Title).
+		Set("body = ?", review.Body).
+		Where("id = ?", review.ID).
+		Returning("*").
+		Exec(ctx)
+
+	if err != nil {
+		return review_model.Review{}, err
+	}
+
+	return review, nil
+}
