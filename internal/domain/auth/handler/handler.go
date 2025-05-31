@@ -29,7 +29,7 @@ func (h *handler) Me(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, http_response.Response{
 		Success: true,
-		Info:    "Current user retrieved successfully!",
+		Message: "Current user retrieved successfully!",
 		Data:    response,
 	})
 }
