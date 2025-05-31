@@ -17,12 +17,12 @@ func NewHandler(authUseCase auth_usecase.UseCase) Handler {
 	}
 }
 func (h *handler) Me(ctx echo.Context) error {
-	uid, ok := ctx.Get("userId").(int64)
+	userId, ok := ctx.Get("userId").(int64)
 	if !ok {
 		return nil
 	}
 
-	response, err := h.authUseCase.GetCurrentUser(ctx.Request().Context(), uid)
+	response, err := h.authUseCase.GetCurrentUser(ctx.Request().Context(), userId)
 	if err != nil {
 		return err
 	}

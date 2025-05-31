@@ -5,7 +5,7 @@ import (
 )
 
 type UpdateRating struct {
-	AnimeId int64 `json:"anime_id"`
+	AnimeId int64 `param:"animeId"`
 	UserId  int64 `json:"-"`
 	Score   int8  `json:"score"`
 }

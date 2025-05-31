@@ -8,4 +8,6 @@ import (
 
 type Repository interface {
 	FindOne(ctx context.Context, tx bun.IDB, id int64) (anime_model.Anime, error)
+	GetScore(ctx context.Context, tx bun.IDB, id int64) (anime_model.AnimeScore, error)
+	UpdateScore(ctx context.Context, tx bun.IDB, score anime_model.AnimeScore) (anime_model.AnimeScore, error)
 }

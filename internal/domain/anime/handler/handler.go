@@ -26,7 +26,7 @@ func (h *handler) Show(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, http_response.Response{
 		Success: true,
-		Info:    "Anime retrieved successfully!",
+		Message: "Anime retrieved successfully!",
 		Data:    response,
 	})
 }

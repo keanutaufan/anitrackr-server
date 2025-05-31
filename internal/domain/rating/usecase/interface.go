@@ -9,4 +9,5 @@ import (
 type UseCase interface {
 	Create(ctx context.Context, req rating_request.StoreRating) (rating_dto.GetResponse, error)
 	FindOne(ctx context.Context, animeId, userId int64) (rating_dto.GetResponse, error)
+	Update(ctx context.Context, req rating_request.UpdateRating) (rating_dto.GetResponse, error)
 }

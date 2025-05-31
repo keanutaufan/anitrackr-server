@@ -9,6 +9,7 @@ func GroupRatingRoute(router *echo.Echo, ratingHandler rating_handler.Handler, a
 	group := router.Group("/rating")
 
 	group.POST("", ratingHandler.Store, authMiddleware)
+	group.PUT("/:animeId", ratingHandler.Update, authMiddleware)
 	group.GET("/:animeId/:userId", ratingHandler.Show)
 
 	return group

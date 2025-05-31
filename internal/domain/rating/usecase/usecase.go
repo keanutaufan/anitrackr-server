@@ -64,3 +64,44 @@ func (uc *useCase) FindOne(ctx context.Context, animeId, userId int64) (rating_d
 
 	return (rating_dto.GetResponse{}).FromModel(result), nil
 }
+
+func (uc *useCase) Update(ctx context.Context, req rating_request.UpdateRating) (rating_dto.GetResponse, error) {
+	tx, err := uc.txManager.Begin(ctx)
+	if err != nil {
+		return rating_dto.GetResponse{}, err
+	}
+
+	oldAnimeScore, err := uc.animeRepo.GetScore(ctx, tx, req.AnimeId)
+	if err != nil {
+		return rating_dto.GetResponse{}, err
+	}
+
+	oldRating, err := uc.ratingRepo.FindOne(ctx, tx, req.AnimeId, req.UserId)
+	if err != nil {
+		return rating_dto.GetResponse{}, err
+	}
+
+	newAnimeScore := oldAnimeScore.Score.
+		Mul(decimal.NewFromInt(oldAnimeScore.ScoredBy)).
+		Sub(decimal.NewFromInt(int64(oldRating.Score))).
+		Add(decimal.NewFromInt(int64(req.Score))).
+		Div(decimal.NewFromInt(oldAnimeScore.ScoredBy))
+
+	_, err = uc.animeRepo.UpdateScore(ctx, tx, anime_model.AnimeScore{
+		ID:       oldAnimeScore.ID,
+		Score:    newAnimeScore,
+		ScoredBy: oldAnimeScore.ScoredBy,
+	})
+
+	result, err := uc.ratingRepo.Update(ctx, tx, req.ToModel())
+	if err != nil {
+		return rating_dto.GetResponse{}, err
+	}
+
+	err = uc.txManager.Commit(tx)
+	if err != nil {
+		return rating_dto.GetResponse{}, err
+	}
+
+	return (rating_dto.GetResponse{}).FromModel(result), nil
+}
