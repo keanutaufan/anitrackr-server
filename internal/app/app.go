@@ -9,6 +9,9 @@ import (
 	anime_usecase "github.com/keanutaufan/anitrackr-server/internal/domain/anime/usecase"
 	auth_handler "github.com/keanutaufan/anitrackr-server/internal/domain/auth/handler"
 	auth_usecase "github.com/keanutaufan/anitrackr-server/internal/domain/auth/usecase"
+	review_handler "github.com/keanutaufan/anitrackr-server/internal/domain/review/handler"
+	review_repository "github.com/keanutaufan/anitrackr-server/internal/domain/review/repository"
+	review_usecase "github.com/keanutaufan/anitrackr-server/internal/domain/review/usecase"
 	user_repository "github.com/keanutaufan/anitrackr-server/internal/domain/user/repository"
 	"github.com/keanutaufan/anitrackr-server/platform/database"
 	"github.com/keanutaufan/anitrackr-server/platform/firebase_app"
@@ -28,19 +31,24 @@ func NewServer() *echo.Echo {
 
 	animeRepository := anime_repository.NewRepository(db)
 	userRepository := user_repository.NewRepository(db)
+	reviewRepository := review_repository.NewRepository(db)
 
 	animeUseCase := anime_usecase.NewUseCase(animeRepository)
 	authUseCase := auth_usecase.NewUseCase(userRepository)
+	reviewUseCase := review_usecase.NewUseCase(reviewRepository)
 
 	animeHandler := anime_handler.NewHandler(animeUseCase)
 	authHandler := auth_handler.NewHandler(authUseCase)
+	reviewHandler := review_handler.NewHandler(reviewUseCase)
 
 	authMiddleware := middlewares.FirebaseAuthMiddleware(firebaseClient)
 
 	engine := echo.New()
+	engine.HTTPErrorHandler = middlewares.ErrorHandler
 	engine.Use(middleware.Logger())
 	route_group.GroupAnimeRoute(engine, animeHandler)
 	route_group.GroupAuthRoute(engine, authHandler, authMiddleware)
+	route_group.GroupReviewRoute(engine, reviewHandler, authMiddleware)
 
 	return engine
 }
