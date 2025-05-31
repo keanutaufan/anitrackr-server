@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"errors"
 	"github.com/keanutaufan/anitrackr-server/platform/firebase_app"
 	"github.com/labstack/echo/v4"
 	"strings"
@@ -25,7 +26,18 @@ func FirebaseAuthMiddleware(fc *firebase_app.FirebaseClient) echo.MiddlewareFunc
 				return err
 			}
 
+			userId, ok := token.Claims["app_user_id"]
+			if !ok {
+				return errors.New("invalid token claims, no app_user_id found")
+			}
+
+			userIdFloat, ok := userId.(float64)
+			if !ok {
+				return errors.New("invalid token claims, no app_user_id found")
+			}
+
 			ctx.Set("firebase_uid", token.UID)
+			ctx.Set("userId", int64(userIdFloat))
 			return next(ctx)
 		}
 	}

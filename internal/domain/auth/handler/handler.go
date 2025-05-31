@@ -17,7 +17,7 @@ func NewHandler(authUseCase auth_usecase.UseCase) Handler {
 	}
 }
 func (h *handler) Me(ctx echo.Context) error {
-	uid, ok := ctx.Get("firebase_uid").(string)
+	uid, ok := ctx.Get("userId").(int64)
 	if !ok {
 		return nil
 	}

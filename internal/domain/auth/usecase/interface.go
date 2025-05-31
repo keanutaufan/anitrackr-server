@@ -6,5 +6,5 @@ import (
 )
 
 type UseCase interface {
-	GetCurrentUser(ctx context.Context, uid string) (user_dto.MeResponse, error)
+	GetCurrentUser(ctx context.Context, userId int64) (user_dto.MeResponse, error)
 }

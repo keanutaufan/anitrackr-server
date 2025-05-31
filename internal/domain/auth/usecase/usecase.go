@@ -16,8 +16,8 @@ func NewUseCase(userRepo user_repository.Repository) UseCase {
 	}
 }
 
-func (uc *useCase) GetCurrentUser(ctx context.Context, uid string) (user_dto.MeResponse, error) {
-	result, err := uc.userRepo.FindOneByUid(ctx, nil, uid)
+func (uc *useCase) GetCurrentUser(ctx context.Context, userId int64) (user_dto.MeResponse, error) {
+	result, err := uc.userRepo.FindOne(ctx, nil, userId)
 	if err != nil {
 		return user_dto.MeResponse{}, err
 	}
