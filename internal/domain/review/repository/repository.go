@@ -2,10 +2,13 @@ package review_repository
 
 import (
 	"context"
+	review_request "github.com/keanutaufan/anitrackr-server/internal/domain/review/dto/request"
 	review_model "github.com/keanutaufan/anitrackr-server/internal/domain/review/model"
 	app_errors "github.com/keanutaufan/anitrackr-server/internal/errors"
 	"github.com/keanutaufan/anitrackr-server/pkg/db_error"
+	"github.com/keanutaufan/anitrackr-server/pkg/pagination"
 	"github.com/uptrace/bun"
+	"math"
 )
 
 type repository struct {
@@ -57,6 +60,50 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, reviewId int64) (r
 	}
 
 	return result, nil
+}
+
+func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req review_request.IndexReview) ([]review_model.Review, pagination.PaginationMeta, error) {
+	if tx == nil {
+		tx = r.db
+	}
+
+	var result []review_model.Review
+	query := tx.NewSelect().
+		Model(&result).
+		Relation("User")
+
+	if req.AnimeId != 0 {
+		query.Where("anime_id = ?", req.AnimeId)
+	}
+
+	if req.UserId != 0 {
+		query.Where("user_id = ?", req.UserId)
+	}
+
+	if req.SortBy != "" && req.SortDir != "" {
+		query.OrderExpr("? ?", bun.Ident(req.SortBy), bun.Safe(req.SortDir))
+	}
+
+	count, err := query.Count(ctx)
+	if err != nil {
+		return []review_model.Review{}, pagination.PaginationMeta{}, err
+	}
+
+	query = query.Limit(req.PageSize).Offset(req.PageSize * (req.Page - 1))
+	err = query.Scan(ctx, &result)
+	if err != nil {
+		return []review_model.Review{}, pagination.PaginationMeta{}, err
+	}
+
+	meta := pagination.PaginationMeta{
+		Page:     req.Page,
+		PageSize: req.PageSize,
+		MaxPage:  int(math.Ceil(float64(count) / float64(req.PageSize))),
+		Count:    count,
+	}
+
+	return result, meta, nil
+
 }
 
 func (r *repository) Update(ctx context.Context, tx bun.IDB, review review_model.Review) (review_model.Review, error) {

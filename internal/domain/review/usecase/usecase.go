@@ -6,6 +6,7 @@ import (
 	review_response "github.com/keanutaufan/anitrackr-server/internal/domain/review/dto/response"
 	review_repository "github.com/keanutaufan/anitrackr-server/internal/domain/review/repository"
 	app_errors "github.com/keanutaufan/anitrackr-server/internal/errors"
+	"github.com/keanutaufan/anitrackr-server/pkg/pagination"
 )
 
 type useCase struct {
@@ -34,6 +35,15 @@ func (uc *useCase) FindOne(ctx context.Context, reviewId int64) (review_response
 	}
 
 	return (review_response.ShowReview{}).FromModel(result), nil
+}
+
+func (uc *useCase) FindWithPagination(ctx context.Context, req review_request.IndexReview) (review_response.IndexReview, pagination.PaginationMeta, error) {
+	result, meta, err := uc.reviewRepo.FindWithPagination(ctx, nil, req)
+	if err != nil {
+		return review_response.IndexReview{}, pagination.PaginationMeta{}, err
+	}
+
+	return (review_response.IndexReview{}).FromModel(result), meta, nil
 }
 
 func (uc *useCase) Update(ctx context.Context, req review_request.UpdateReview) (review_response.ShowReview, error) {

@@ -43,6 +43,25 @@ func (h *handler) Store(c echo.Context) error {
 	})
 }
 
+func (h *handler) Index(c echo.Context) error {
+	var req review_request.IndexReview
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	response, meta, err := h.reviewUseCase.FindWithPagination(c.Request().Context(), req)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, http_response.Response{
+		Success: true,
+		Message: "Reviews retrieved successfully!",
+		Data:    response,
+		Meta:    meta,
+	})
+}
+
 func (h *handler) Show(c echo.Context) error {
 	id := cast.ToInt64(c.Param("reviewId"))
 	response, err := h.reviewUseCase.FindOne(c.Request().Context(), id)
