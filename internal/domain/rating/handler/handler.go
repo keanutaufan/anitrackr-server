@@ -5,7 +5,6 @@ import (
 	rating_usecase "github.com/keanutaufan/anitrackr-server/internal/domain/rating/usecase"
 	"github.com/keanutaufan/anitrackr-server/pkg/http_response"
 	"github.com/labstack/echo/v4"
-	"github.com/spf13/cast"
 	"net/http"
 )
 
@@ -44,10 +43,18 @@ func (h *handler) Store(c echo.Context) error {
 }
 
 func (h *handler) Show(c echo.Context) error {
-	animeId := cast.ToInt64(c.Param("animeId"))
-	userId := cast.ToInt64(c.Param("userId"))
+	var req rating_request.ShowRating
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
 
-	response, err := h.ratingUseCase.FindOne(c.Request().Context(), animeId, userId)
+	userId, ok := c.Get("userId").(int64)
+	if !ok {
+		return nil
+	}
+	req.UserId = userId
+
+	response, err := h.ratingUseCase.FindOne(c.Request().Context(), req)
 	if err != nil {
 		return err
 	}
