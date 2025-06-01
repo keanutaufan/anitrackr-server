@@ -9,6 +9,7 @@ import (
 	rating_repository "github.com/keanutaufan/anitrackr-server/internal/domain/rating/repository"
 	"github.com/keanutaufan/anitrackr-server/platform/database"
 	"github.com/shopspring/decimal"
+	"github.com/uptrace/bun"
 )
 
 type useCase struct {
@@ -30,6 +31,12 @@ func (uc *useCase) Create(ctx context.Context, req rating_request.StoreRating) (
 	if err != nil {
 		return rating_dto.ShowRating{}, err
 	}
+	defer func(tx bun.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			return
+		}
+	}(tx)
 
 	oldAnimeScore, err := uc.animeRepo.GetScore(ctx, tx, req.AnimeId)
 	if err != nil {
@@ -70,6 +77,12 @@ func (uc *useCase) Update(ctx context.Context, req rating_request.UpdateRating) 
 	if err != nil {
 		return rating_dto.ShowRating{}, err
 	}
+	defer func(tx bun.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			return
+		}
+	}(tx)
 
 	oldAnimeScore, err := uc.animeRepo.GetScore(ctx, tx, req.AnimeId)
 	if err != nil {
@@ -114,6 +127,12 @@ func (uc *useCase) Delete(ctx context.Context, req rating_request.DeleteRating) 
 	if err != nil {
 		return err
 	}
+	defer func(tx bun.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			return
+		}
+	}(tx)
 
 	oldAnimeScore, err := uc.animeRepo.GetScore(ctx, tx, req.AnimeId)
 	if err != nil {
