@@ -45,7 +45,8 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, reviewId int64) (r
 	var result review_model.Review
 	err := tx.NewSelect().
 		Model(&result).
-		Where("id = ?", reviewId).
+		Relation("User").
+		Where("review.id = ?", reviewId).
 		Scan(ctx)
 
 	if err != nil {
