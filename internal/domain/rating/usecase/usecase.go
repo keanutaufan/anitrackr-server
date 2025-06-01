@@ -92,6 +92,9 @@ func (uc *useCase) Update(ctx context.Context, req rating_request.UpdateRating) 
 		Score:    newAnimeScore,
 		ScoredBy: oldAnimeScore.ScoredBy,
 	})
+	if err != nil {
+		return rating_dto.ShowRating{}, err
+	}
 
 	result, err := uc.ratingRepo.Update(ctx, tx, req.ToModel())
 	if err != nil {
@@ -104,4 +107,53 @@ func (uc *useCase) Update(ctx context.Context, req rating_request.UpdateRating) 
 	}
 
 	return (rating_dto.ShowRating{}).FromModel(result), nil
+}
+
+func (uc *useCase) Delete(ctx context.Context, req rating_request.DeleteRating) error {
+	tx, err := uc.txManager.Begin(ctx)
+	if err != nil {
+		return err
+	}
+
+	oldAnimeScore, err := uc.animeRepo.GetScore(ctx, tx, req.AnimeId)
+	if err != nil {
+		return err
+	}
+
+	oldRating, err := uc.ratingRepo.FindOne(ctx, tx, req.AnimeId, req.UserId)
+	if err != nil {
+		return err
+	}
+
+	var newAnimeScore decimal.Decimal
+
+	if oldAnimeScore.ScoredBy > 1 {
+		newAnimeScore = oldAnimeScore.Score.
+			Mul(decimal.NewFromInt(oldAnimeScore.ScoredBy)).
+			Sub(decimal.NewFromInt(int64(oldRating.Score))).
+			Div(decimal.NewFromInt(oldAnimeScore.ScoredBy - 1))
+	} else {
+		newAnimeScore = decimal.Zero
+	}
+
+	_, err = uc.animeRepo.UpdateScore(ctx, tx, anime_model.AnimeScore{
+		ID:       oldAnimeScore.ID,
+		Score:    newAnimeScore,
+		ScoredBy: oldAnimeScore.ScoredBy - 1,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = uc.ratingRepo.Delete(ctx, tx, req.AnimeId, req.UserId)
+	if err != nil {
+		return err
+	}
+
+	err = uc.txManager.Commit(tx)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

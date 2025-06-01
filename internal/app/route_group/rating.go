@@ -11,6 +11,7 @@ func GroupRatingRoute(router *echo.Echo, ratingHandler rating_handler.Handler, a
 	group.POST("", ratingHandler.Store, authMiddleware)
 	group.PUT("/:animeId", ratingHandler.Update, authMiddleware)
 	group.GET("/:animeId", ratingHandler.Show, authMiddleware)
+	group.DELETE("/:animeId", ratingHandler.Delete, authMiddleware)
 
 	return group
 }

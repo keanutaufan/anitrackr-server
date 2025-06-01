@@ -75,3 +75,20 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, animeId, userId in
 
 	return result, nil
 }
+
+func (r *repository) Delete(ctx context.Context, tx bun.IDB, animeId, userId int64) error {
+	if tx == nil {
+		tx = r.db
+	}
+
+	_, err := tx.NewDelete().
+		Model(&rating_model.Rating{}).
+		Where("anime_id = ? AND user_id = ?", animeId, userId).
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

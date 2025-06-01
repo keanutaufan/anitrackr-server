@@ -89,3 +89,26 @@ func (h *handler) Update(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+func (h *handler) Delete(c echo.Context) error {
+	var req rating_request.DeleteRating
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	userId, ok := c.Get("userId").(int64)
+	if !ok {
+		return nil
+	}
+	req.UserId = userId
+
+	err := h.ratingUseCase.Delete(c.Request().Context(), req)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, http_response.Response{
+		Success: true,
+		Message: "Rating deleted successfully!",
+	})
+}

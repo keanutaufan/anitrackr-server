@@ -10,4 +10,5 @@ type UseCase interface {
 	Create(ctx context.Context, req rating_request.StoreRating) (rating_dto.ShowRating, error)
 	FindOne(ctx context.Context, rating rating_request.ShowRating) (rating_dto.ShowRating, error)
 	Update(ctx context.Context, req rating_request.UpdateRating) (rating_dto.ShowRating, error)
+	Delete(ctx context.Context, req rating_request.DeleteRating) error
 }
