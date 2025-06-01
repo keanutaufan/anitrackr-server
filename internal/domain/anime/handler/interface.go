@@ -5,5 +5,6 @@ import (
 )
 
 type Handler interface {
-	Show(ctx echo.Context) error
+	Index(c echo.Context) error
+	Show(c echo.Context) error
 }

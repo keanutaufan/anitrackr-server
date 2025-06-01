@@ -17,24 +17,50 @@ func NewHandler(animeUseCase anime_usecase.UseCase) Handler {
 		animeUseCase: animeUseCase,
 	}
 }
-func (h *handler) Show(ctx echo.Context) error {
-	var req anime_request.ShowWithUser
-	if err := ctx.Bind(&req); err != nil {
+
+func (h *handler) Index(c echo.Context) error {
+	var req anime_request.IndexAnime
+	if err := c.Bind(&req); err != nil {
 		return err
 	}
 
-	userId, ok := ctx.Get("userId").(int64)
+	userId, ok := c.Get("userId").(int64)
 	if !ok {
 		return nil
 	}
 	req.UserId = userId
 
-	response, err := h.animeUseCase.FindOne(ctx.Request().Context(), req)
+	response, meta, err := h.animeUseCase.FindWithPagination(c.Request().Context(), req)
 	if err != nil {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, http_response.Response{
+	return c.JSON(http.StatusOK, http_response.Response{
+		Success: true,
+		Message: "Anime retrieved successfully!",
+		Data:    response,
+		Meta:    meta,
+	})
+}
+
+func (h *handler) Show(c echo.Context) error {
+	var req anime_request.ShowWithUser
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	userId, ok := c.Get("userId").(int64)
+	if !ok {
+		return nil
+	}
+	req.UserId = userId
+
+	response, err := h.animeUseCase.FindOne(c.Request().Context(), req)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, http_response.Response{
 		Success: true,
 		Message: "Anime retrieved successfully!",
 		Data:    response,

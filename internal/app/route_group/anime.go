@@ -8,6 +8,7 @@ import (
 func GroupAnimeRoute(router *echo.Echo, animeHandler anime_handler.Handler, authMiddleware echo.MiddlewareFunc) *echo.Group {
 	group := router.Group("/anime")
 
+	group.GET("", animeHandler.Index, authMiddleware)
 	group.GET("/:animeId", animeHandler.Show, authMiddleware)
 
 	return group
