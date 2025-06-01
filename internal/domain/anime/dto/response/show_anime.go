@@ -1,11 +1,11 @@
-package anime_dto
+package anime_response
 
 import (
 	"github.com/keanutaufan/anitrackr-server/internal/domain/anime/model"
 	"time"
 )
 
-type GetResponse struct {
+type ShowAnime struct {
 	ID            int64                  `json:"id"`
 	Title         string                 `json:"title"`
 	MalScore      float64                `json:"mal_score"`
@@ -34,8 +34,8 @@ type GetResponse struct {
 	UpdatedAt     time.Time              `json:"updated_at"`
 }
 
-func (res GetResponse) FromModel(model anime_model.Anime) GetResponse {
-	return GetResponse{
+func (res ShowAnime) FromModel(model anime_model.Anime) ShowAnime {
+	return ShowAnime{
 		ID:            model.ID,
 		Title:         model.Title,
 		MalScore:      model.MalScore.InexactFloat64(),

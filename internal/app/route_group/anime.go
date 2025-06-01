@@ -5,10 +5,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GroupAnimeRoute(router *echo.Echo, animeHandler anime_handler.Handler) *echo.Group {
+func GroupAnimeRoute(router *echo.Echo, animeHandler anime_handler.Handler, authMiddleware echo.MiddlewareFunc) *echo.Group {
 	group := router.Group("/anime")
 
-	group.GET("/:animeId", animeHandler.Show)
+	group.GET("/:animeId", animeHandler.Show, authMiddleware)
 
 	return group
 }

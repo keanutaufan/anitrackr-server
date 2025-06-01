@@ -18,7 +18,7 @@ func NewRepository(db *bun.DB) Repository {
 	}
 }
 
-func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (anime_model.Anime, error) {
+func (r *repository) FindOne(ctx context.Context, tx bun.IDB, animeId int64) (anime_model.Anime, error) {
 	if tx == nil {
 		tx = r.db
 	}
@@ -26,7 +26,7 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (anime_m
 	var result anime_model.Anime
 	err := tx.NewSelect().
 		Model(&result).
-		Where("id = ?", id).
+		Where("id = ?", animeId).
 		Scan(ctx)
 
 	if err != nil {
@@ -39,7 +39,39 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, id int64) (anime_m
 	return result, nil
 }
 
-func (r *repository) GetScore(ctx context.Context, tx bun.IDB, id int64) (anime_model.AnimeScore, error) {
+func (r *repository) FindOneWithUserProperties(ctx context.Context, tx bun.IDB, animeId, userId int64) (anime_model.UserAnime, error) {
+	if tx == nil {
+		tx = r.db
+	}
+
+	var result anime_model.UserAnime
+	err := tx.NewSelect().
+		Table("anime").
+		Column("anime.*").
+		ColumnExpr("reviews.id AS user_review__id").
+		ColumnExpr("reviews.title AS user_review__title").
+		ColumnExpr("reviews.body AS user_review__body").
+		ColumnExpr("reviews.anime_id AS user_review__anime_id").
+		ColumnExpr("reviews.user_id AS user_review__user_id").
+		ColumnExpr("reviews.created_at AS user_review__created_at").
+		ColumnExpr("reviews.updated_at AS user_review__updated_at").
+		ColumnExpr("COALESCE(ratings.score, 0) AS user_score").
+		Join("LEFT JOIN reviews ON reviews.anime_id = anime.id AND reviews.user_id = ?", userId).
+		Join("LEFT JOIN ratings ON ratings.anime_id = anime.id AND ratings.user_id = ?", userId).
+		Where("anime.id = ?", animeId).
+		Scan(ctx, &result)
+
+	if err != nil {
+		if db_error.IsNotFound(err) {
+			return anime_model.UserAnime{}, app_errors.ErrNotFound
+		}
+		return anime_model.UserAnime{}, err
+	}
+
+	return result, nil
+}
+
+func (r *repository) GetScore(ctx context.Context, tx bun.IDB, animeId int64) (anime_model.AnimeScore, error) {
 	if tx == nil {
 		tx = r.db
 	}
@@ -47,7 +79,7 @@ func (r *repository) GetScore(ctx context.Context, tx bun.IDB, id int64) (anime_
 	var result anime_model.AnimeScore
 	err := tx.NewSelect().
 		Model(&result).
-		Where("id = ?", id).
+		Where("id = ?", animeId).
 		Scan(ctx)
 
 	if err != nil {

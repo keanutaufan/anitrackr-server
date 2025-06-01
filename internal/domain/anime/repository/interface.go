@@ -7,7 +7,8 @@ import (
 )
 
 type Repository interface {
-	FindOne(ctx context.Context, tx bun.IDB, id int64) (anime_model.Anime, error)
-	GetScore(ctx context.Context, tx bun.IDB, id int64) (anime_model.AnimeScore, error)
+	FindOne(ctx context.Context, tx bun.IDB, animeId int64) (anime_model.Anime, error)
+	FindOneWithUserProperties(ctx context.Context, tx bun.IDB, animeId, userId int64) (anime_model.UserAnime, error)
+	GetScore(ctx context.Context, tx bun.IDB, animeId int64) (anime_model.AnimeScore, error)
 	UpdateScore(ctx context.Context, tx bun.IDB, score anime_model.AnimeScore) (anime_model.AnimeScore, error)
 }

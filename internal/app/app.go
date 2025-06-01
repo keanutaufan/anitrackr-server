@@ -54,7 +54,7 @@ func NewServer() *echo.Echo {
 	engine := echo.New()
 	engine.HTTPErrorHandler = middlewares.ErrorHandler
 	engine.Use(middleware.Logger())
-	route_group.GroupAnimeRoute(engine, animeHandler)
+	route_group.GroupAnimeRoute(engine, animeHandler, authMiddleware)
 	route_group.GroupAuthRoute(engine, authHandler, authMiddleware)
 	route_group.GroupReviewRoute(engine, reviewHandler, authMiddleware)
 	route_group.GroupRatingRoute(engine, ratingHandler, authMiddleware)

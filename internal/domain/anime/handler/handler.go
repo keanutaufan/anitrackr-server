@@ -1,10 +1,10 @@
 package anime_handler
 
 import (
+	anime_request "github.com/keanutaufan/anitrackr-server/internal/domain/anime/dto/request"
 	anime_usecase "github.com/keanutaufan/anitrackr-server/internal/domain/anime/usecase"
 	"github.com/keanutaufan/anitrackr-server/pkg/http_response"
 	"github.com/labstack/echo/v4"
-	"github.com/spf13/cast"
 	"net/http"
 )
 
@@ -18,8 +18,18 @@ func NewHandler(animeUseCase anime_usecase.UseCase) Handler {
 	}
 }
 func (h *handler) Show(ctx echo.Context) error {
-	id := cast.ToInt64(ctx.Param("animeId"))
-	response, err := h.animeUseCase.FindOne(ctx.Request().Context(), id)
+	var req anime_request.ShowWithUser
+	if err := ctx.Bind(&req); err != nil {
+		return err
+	}
+
+	userId, ok := ctx.Get("userId").(int64)
+	if !ok {
+		return nil
+	}
+	req.UserId = userId
+
+	response, err := h.animeUseCase.FindOne(ctx.Request().Context(), req)
 	if err != nil {
 		return err
 	}
