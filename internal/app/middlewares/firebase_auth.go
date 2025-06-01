@@ -13,7 +13,7 @@ func FirebaseAuthMiddleware(fc *firebase_app.FirebaseClient) echo.MiddlewareFunc
 		return func(c echo.Context) error {
 			authHeader := c.Request().Header.Get("Authorization")
 			if authHeader == "" {
-				return nil
+				return app_error.New(http.StatusUnauthorized, "Missing authorization header")
 			}
 
 			parts := strings.SplitN(authHeader, " ", 2)
