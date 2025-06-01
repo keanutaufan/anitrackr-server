@@ -1,0 +1,13 @@
+name: Build and Test Application
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-reusable.yml
