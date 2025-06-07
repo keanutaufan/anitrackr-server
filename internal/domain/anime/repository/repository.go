@@ -101,6 +101,10 @@ func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req ani
 		)
 	}
 
+	if req.MinUserScore != 0 {
+		query = query.Where("COALESCE(ratings.score, 0) >= ?", req.MinUserScore)
+	}
+
 	if req.SortBy != "" && req.SortDir != "" {
 		query.OrderExpr("? ?", bun.Ident(req.SortBy), bun.Safe(req.SortDir))
 	}
