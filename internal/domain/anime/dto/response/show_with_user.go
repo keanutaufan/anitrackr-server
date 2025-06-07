@@ -7,8 +7,9 @@ import (
 
 type ShowWithUser struct {
 	ShowAnime
-	UserScore  int8                        `json:"user_score"`
-	UserReview *review_response.ShowReview `json:"user_review"`
+	UserScore    int8                        `json:"user_score"`
+	UserListName *string                     `json:"user_list_name"`
+	UserReview   *review_response.ShowReview `json:"user_review"`
 }
 
 func (res ShowWithUser) FromModel(model anime_model.UserAnime) ShowWithUser {
@@ -19,8 +20,9 @@ func (res ShowWithUser) FromModel(model anime_model.UserAnime) ShowWithUser {
 	}
 
 	return ShowWithUser{
-		ShowAnime:  (ShowAnime{}).FromModel(model.Anime),
-		UserScore:  model.UserScore,
-		UserReview: userReview,
+		ShowAnime:    (ShowAnime{}).FromModel(model.Anime),
+		UserScore:    model.UserScore,
+		UserListName: model.UserListName,
+		UserReview:   userReview,
 	}
 }

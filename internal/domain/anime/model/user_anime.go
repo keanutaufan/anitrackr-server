@@ -9,6 +9,7 @@ type UserAnime struct {
 	bun.BaseModel `bun:"table:anime"`
 
 	Anime
-	UserScore  int8                 `bun:"user_score"`
-	UserReview *review_model.Review `bun:"user_review"`
+	UserScore    int8                 `bun:"user_score"`
+	UserListName *string              `bun:"user_list_name"`
+	UserReview   *review_model.Review `bun:"user_review"`
 }

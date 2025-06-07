@@ -59,8 +59,10 @@ func (r *repository) FindOneWithUserProperties(ctx context.Context, tx bun.IDB, 
 		ColumnExpr("reviews.created_at AS user_review__created_at").
 		ColumnExpr("reviews.updated_at AS user_review__updated_at").
 		ColumnExpr("COALESCE(ratings.score, 0) AS user_score").
+		ColumnExpr("lists.name AS user_list_name").
 		Join("LEFT JOIN reviews ON reviews.anime_id = anime.id AND reviews.user_id = ?", userId).
 		Join("LEFT JOIN ratings ON ratings.anime_id = anime.id AND ratings.user_id = ?", userId).
+		Join("LEFT JOIN lists ON lists.anime_id = anime.id AND lists.user_id = ?", userId).
 		Where("anime.id = ?", animeId).
 		Scan(ctx, &result)
 
@@ -91,8 +93,10 @@ func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req ani
 		ColumnExpr("reviews.created_at AS user_review__created_at").
 		ColumnExpr("reviews.updated_at AS user_review__updated_at").
 		ColumnExpr("COALESCE(ratings.score, 0) AS user_score").
+		ColumnExpr("lists.name AS user_list_name").
 		Join("LEFT JOIN reviews ON reviews.anime_id = anime.id AND reviews.user_id = ?", req.UserId).
-		Join("LEFT JOIN ratings ON ratings.anime_id = anime.id AND ratings.user_id = ?", req.UserId)
+		Join("LEFT JOIN ratings ON ratings.anime_id = anime.id AND ratings.user_id = ?", req.UserId).
+		Join("LEFT JOIN lists ON lists.anime_id = anime.id AND lists.user_id = ?", req.UserId)
 
 	if req.Search != "" {
 		query = query.Where(
@@ -103,6 +107,10 @@ func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req ani
 
 	if req.MinUserScore != 0 {
 		query = query.Where("COALESCE(ratings.score, 0) >= ?", req.MinUserScore)
+	}
+
+	if req.ListName != "" {
+		query = query.Where("lists.name = ?", req.ListName)
 	}
 
 	if req.SortBy != "" && req.SortDir != "" {
