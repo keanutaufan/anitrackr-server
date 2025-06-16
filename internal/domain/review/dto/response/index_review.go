@@ -12,3 +12,12 @@ func (res IndexReview) FromModel(model []review_model.Review) IndexReview {
 
 	return IndexReview
 }
+
+func (res IndexReview) FromDenormalizedModel(model []review_model.ReviewDenormalized) IndexReview {
+	IndexReview := make([]ShowReview, len(model))
+	for i, showReview := range model {
+		IndexReview[i] = (ShowReview{}).FromDenormalizedModel(showReview)
+	}
+
+	return IndexReview
+}

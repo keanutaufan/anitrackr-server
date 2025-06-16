@@ -34,7 +34,7 @@ func (uc *useCase) FindOne(ctx context.Context, reviewId int64) (review_response
 		return review_response.ShowReview{}, err
 	}
 
-	return (review_response.ShowReview{}).FromModel(result), nil
+	return (review_response.ShowReview{}).FromDenormalizedModel(result), nil
 }
 
 func (uc *useCase) FindWithPagination(ctx context.Context, req review_request.IndexReview) (review_response.IndexReview, pagination.PaginationMeta, error) {
@@ -43,7 +43,7 @@ func (uc *useCase) FindWithPagination(ctx context.Context, req review_request.In
 		return review_response.IndexReview{}, pagination.PaginationMeta{}, err
 	}
 
-	return (review_response.IndexReview{}).FromModel(result), meta, nil
+	return (review_response.IndexReview{}).FromDenormalizedModel(result), meta, nil
 }
 
 func (uc *useCase) Update(ctx context.Context, req review_request.UpdateReview) (review_response.ShowReview, error) {

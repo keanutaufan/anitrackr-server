@@ -40,37 +40,43 @@ func (r *repository) Create(ctx context.Context, tx bun.IDB, review review_model
 	return review, nil
 }
 
-func (r *repository) FindOne(ctx context.Context, tx bun.IDB, reviewId int64) (review_model.Review, error) {
+func (r *repository) FindOne(ctx context.Context, tx bun.IDB, reviewId int64) (review_model.ReviewDenormalized, error) {
 	if tx == nil {
 		tx = r.db
 	}
 
-	var result review_model.Review
+	var result review_model.ReviewDenormalized
 	err := tx.NewSelect().
 		Model(&result).
+		ColumnExpr("review_denormalized.*").
+		ColumnExpr("anime.title as anime_title").
 		Relation("User").
-		Where("review.id = ?", reviewId).
+		Join("JOIN anime ON anime.id = review_denormalized.anime_id").
+		Where("review_denormalized.id = ?", reviewId).
 		Scan(ctx)
 
 	if err != nil {
 		if db_error.IsNotFound(err) {
-			return review_model.Review{}, app_errors.ErrNotFound
+			return review_model.ReviewDenormalized{}, app_errors.ErrNotFound
 		}
-		return review_model.Review{}, err
+		return review_model.ReviewDenormalized{}, err
 	}
 
 	return result, nil
 }
 
-func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req review_request.IndexReview) ([]review_model.Review, pagination.PaginationMeta, error) {
+func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req review_request.IndexReview) ([]review_model.ReviewDenormalized, pagination.PaginationMeta, error) {
 	if tx == nil {
 		tx = r.db
 	}
 
-	var result []review_model.Review
+	var result []review_model.ReviewDenormalized
 	query := tx.NewSelect().
 		Model(&result).
-		Relation("User")
+		ColumnExpr("review_denormalized.*").
+		ColumnExpr("anime.title as anime_title").
+		Relation("User").
+		Join("JOIN anime ON anime.id = review_denormalized.anime_id")
 
 	if req.AnimeId != 0 {
 		query.Where("anime_id = ?", req.AnimeId)
@@ -86,13 +92,13 @@ func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req rev
 
 	count, err := query.Count(ctx)
 	if err != nil {
-		return []review_model.Review{}, pagination.PaginationMeta{}, err
+		return []review_model.ReviewDenormalized{}, pagination.PaginationMeta{}, err
 	}
 
 	query = query.Limit(req.PageSize).Offset(req.PageSize * (req.Page - 1))
 	err = query.Scan(ctx, &result)
 	if err != nil {
-		return []review_model.Review{}, pagination.PaginationMeta{}, err
+		return []review_model.ReviewDenormalized{}, pagination.PaginationMeta{}, err
 	}
 
 	meta := pagination.PaginationMeta{
