@@ -7,14 +7,15 @@ import (
 )
 
 type ShowReview struct {
-	ID        int64                   `json:"id"`
-	Title     string                  `json:"title"`
-	Body      string                  `json:"body"`
-	AnimeId   int64                   `json:"anime_id"`
-	UserId    int64                   `json:"user_id"`
-	User      *user_response.ShowUser `json:"user,omitempty"`
-	CreatedAt time.Time               `json:"created_at"`
-	UpdatedAt time.Time               `json:"updated_at"`
+	ID         int64                   `json:"id"`
+	Title      string                  `json:"title"`
+	Body       string                  `json:"body"`
+	AnimeId    int64                   `json:"anime_id"`
+	AnimeTitle string                  `json:"anime_title"`
+	UserId     int64                   `json:"user_id"`
+	User       *user_response.ShowUser `json:"user,omitempty"`
+	CreatedAt  time.Time               `json:"created_at"`
+	UpdatedAt  time.Time               `json:"updated_at"`
 }
 
 func (res ShowReview) FromModel(model review_model.Review) ShowReview {
@@ -25,13 +26,14 @@ func (res ShowReview) FromModel(model review_model.Review) ShowReview {
 	}
 
 	return ShowReview{
-		ID:        model.ID,
-		Title:     model.Title,
-		Body:      model.Body,
-		AnimeId:   model.AnimeId,
-		UserId:    model.UserId,
-		User:      user,
-		CreatedAt: model.CreatedAt,
-		UpdatedAt: model.UpdatedAt,
+		ID:         model.ID,
+		Title:      model.Title,
+		Body:       model.Body,
+		AnimeId:    model.AnimeId,
+		UserId:     model.UserId,
+		AnimeTitle: model.AnimeTitle,
+		User:       user,
+		CreatedAt:  model.CreatedAt,
+		UpdatedAt:  model.UpdatedAt,
 	}
 }

@@ -48,7 +48,10 @@ func (r *repository) FindOne(ctx context.Context, tx bun.IDB, reviewId int64) (r
 	var result review_model.Review
 	err := tx.NewSelect().
 		Model(&result).
+		ColumnExpr("review.*").
+		ColumnExpr("anime.title as anime_title").
 		Relation("User").
+		Join("JOIN anime ON anime.id = review.anime_id").
 		Where("review.id = ?", reviewId).
 		Scan(ctx)
 
@@ -70,7 +73,10 @@ func (r *repository) FindWithPagination(ctx context.Context, tx bun.IDB, req rev
 	var result []review_model.Review
 	query := tx.NewSelect().
 		Model(&result).
-		Relation("User")
+		ColumnExpr("review.*").
+		ColumnExpr("anime.title as anime_title").
+		Relation("User").
+		Join("JOIN anime ON anime.id = review.anime_id")
 
 	if req.AnimeId != 0 {
 		query.Where("anime_id = ?", req.AnimeId)
