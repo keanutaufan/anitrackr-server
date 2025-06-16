@@ -5,6 +5,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/extra/bundebug"
 	"os"
 )
 
@@ -12,6 +13,7 @@ func NewPostgresDatabase(config Config) *bun.DB {
 	dsn := config.Dsn()
 	sqlDb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	bunDb := bun.NewDB(sqlDb, pgdialect.New())
+	bunDb.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
 	return bunDb
 }
 
