@@ -5,15 +5,17 @@ import (
 )
 
 type StoreList struct {
-	AnimeId int64  `json:"anime_id"`
-	UserId  int64  `json:"-"`
-	Name    string `json:"name"`
+	AnimeId        int64  `json:"anime_id"`
+	UserId         int64  `json:"-"`
+	Name           string `json:"name"`
+	EpisodeWatched int    `json:"episode_watched"`
 }
 
 func (req StoreList) ToModel() list_model.List {
 	return list_model.List{
-		AnimeID: req.AnimeId,
-		UserID:  req.UserId,
-		Name:    req.Name,
+		AnimeID:        req.AnimeId,
+		UserID:         req.UserId,
+		Name:           req.Name,
+		EpisodeWatched: req.EpisodeWatched,
 	}
 }

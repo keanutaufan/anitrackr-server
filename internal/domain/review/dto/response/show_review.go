@@ -12,6 +12,7 @@ type ShowReview struct {
 	Body       string                  `json:"body"`
 	AnimeId    int64                   `json:"anime_id"`
 	AnimeTitle string                  `json:"anime_title"`
+	IsLiked    bool                    `json:"is_liked"`
 	UserId     int64                   `json:"user_id"`
 	User       *user_response.ShowUser `json:"user,omitempty"`
 	CreatedAt  time.Time               `json:"created_at"`
@@ -32,6 +33,7 @@ func (res ShowReview) FromModel(model review_model.Review) ShowReview {
 		AnimeId:    model.AnimeId,
 		UserId:     model.UserId,
 		AnimeTitle: "",
+		IsLiked:    model.IsLiked,
 		User:       user,
 		CreatedAt:  model.CreatedAt,
 		UpdatedAt:  model.UpdatedAt,
@@ -52,6 +54,7 @@ func (res ShowReview) FromDenormalizedModel(model review_model.ReviewDenormalize
 		AnimeId:    model.AnimeId,
 		UserId:     model.UserId,
 		AnimeTitle: model.AnimeTitle,
+		IsLiked:    model.IsLiked,
 		User:       user,
 		CreatedAt:  model.CreatedAt,
 		UpdatedAt:  model.UpdatedAt,

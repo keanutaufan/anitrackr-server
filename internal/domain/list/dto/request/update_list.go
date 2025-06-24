@@ -5,15 +5,17 @@ import (
 )
 
 type UpdateList struct {
-	AnimeId int64  `param:"animeId"`
-	UserId  int64  `json:"-"`
-	Name    string `json:"name"`
+	AnimeId        int64  `param:"animeId"`
+	UserId         int64  `json:"-"`
+	Name           string `json:"name"`
+	EpisodeWatched int    `json:"episode_watched"`
 }
 
 func (req UpdateList) ToModel() list_model.List {
 	return list_model.List{
-		AnimeID: req.AnimeId,
-		UserID:  req.UserId,
-		Name:    req.Name,
+		AnimeID:        req.AnimeId,
+		UserID:         req.UserId,
+		Name:           req.Name,
+		EpisodeWatched: req.EpisodeWatched,
 	}
 }

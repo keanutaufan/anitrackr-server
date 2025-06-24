@@ -45,6 +45,7 @@ func (r *repository) Update(ctx context.Context, tx bun.IDB, list list_model.Lis
 	_, err := tx.NewUpdate().
 		Model(&list).
 		Column("name").
+		Column("episode_watched").
 		WherePK().
 		Exec(ctx)
 

@@ -8,9 +8,10 @@ import (
 type Rating struct {
 	bun.BaseModel `bun:"table:ratings"`
 
-	AnimeID   int64     `bun:"anime_id,pk"`
-	UserID    int64     `bun:"user_id,pk"`
-	Score     int8      `bun:"score,notnull"`
-	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
-	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+	AnimeID        int64     `bun:"anime_id,pk"`
+	UserID         int64     `bun:"user_id,pk"`
+	Score          int8      `bun:"score,notnull"`
+	EpisodeWatched int       `bun:"episode_watched,notnull"`
+	CreatedAt      time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+	UpdatedAt      time.Time `bun:",nullzero,notnull,default:current_timestamp"`
 }

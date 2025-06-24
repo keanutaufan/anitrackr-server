@@ -45,6 +45,7 @@ func (r *repository) Update(ctx context.Context, tx bun.IDB, rating rating_model
 	_, err := tx.NewUpdate().
 		Model(&rating).
 		Column("score").
+		Column("episode_watched").
 		WherePK().
 		Exec(ctx)
 

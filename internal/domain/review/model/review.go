@@ -14,6 +14,7 @@ type Review struct {
 	Body      string    `bun:"body,notnull"`
 	AnimeId   int64     `bun:"anime_id,notnull,unique:anime_user"`
 	UserId    int64     `bun:"user_id,notnull,unique:anime_user"`
+	IsLiked   bool      `bun:"is_liked,notnull"`
 	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
 	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
 

@@ -121,6 +121,7 @@ func (r *repository) Update(ctx context.Context, tx bun.IDB, review review_model
 		Model(&review).
 		Set("title = ?", review.Title).
 		Set("body = ?", review.Body).
+		Set("is_liked = ?", review.IsLiked).
 		Where("id = ?", review.ID).
 		Returning("*").
 		Exec(ctx)
